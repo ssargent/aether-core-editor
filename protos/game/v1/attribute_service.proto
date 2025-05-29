@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package game.v1;
+
+option go_package = "github.com/ssargent/aether-core-editor/gen/game/v1;gamev1";
+
+import "protos/game/v1/common.proto";
+
+// Attribute
+message Attribute {
+  int64 id = 1;
+  string name = 2;
+  string description = 3;
+  Metadata metadata = 4;
+}
+
+message CreateAttributeRequest {
+  string name = 1;
+  string description = 2;
+}
+
+message UpdateAttributeRequest {
+  int64 id = 1;
+  string name = 2;
+  string description = 3;
+}
+
+message GetAttributeRequest {
+  int64 id = 1;
+}
+
+message DeleteAttributeRequest {
+  int64 id = 1;
+}
+
+message ListAttributesRequest {
+  string name = 1;
+}
+
+message AttributeResponse {
+  Attribute attribute = 1;
+}
+
+message ListAttributesResponse {
+  repeated Attribute attributes = 1;
+  PaginationResponse pagination = 2;
+}
+
+// Attribute filter for advanced querying
+message AttributeFilter {
+  optional string name = 1;
+}
+
+service AttributeService {
+  rpc CreateAttribute(CreateAttributeRequest) returns (AttributeResponse);
+  rpc GetAttribute(GetAttributeRequest) returns (AttributeResponse);
+  rpc UpdateAttribute(UpdateAttributeRequest) returns (AttributeResponse);
+  rpc DeleteAttribute(DeleteAttributeRequest) returns (DeleteResponse);
+  rpc ListAttributes(ListAttributesRequest) returns (ListAttributesResponse);
+}

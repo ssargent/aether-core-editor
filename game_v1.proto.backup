@@ -6,11 +6,17 @@ option go_package = "github.com/ssargent/aether-core-editor/gen/game/v1;gamev1";
 
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/struct.proto";
+import "google/protobuf/empty.proto";
 
 // Common metadata for all entities
 message Metadata {
   google.protobuf.Timestamp created_at = 1;
   google.protobuf.Timestamp updated_at = 2;
+}
+
+// Basic identifier message for cleaner service signatures
+message Id {
+  int64 id = 1;
 }
 
 message PaginationRequest {
@@ -23,6 +29,12 @@ message PaginationResponse {
   int32 page_count = 2;
   int32 current_page = 3;
   int32 page_size = 4;
+}
+
+// Standard delete response for consistency
+message DeleteResponse {
+  bool success = 1;
+  string message = 2;
 }
 
 // World
@@ -115,43 +127,43 @@ message ListAttributesResponse {
 message Capability {
   int64 id = 1;
   int64 world_id = 2;
-  int64 parent_id = 3;
+  optional int64 parent_id = 3;  // Made optional for proper proto3 semantics
   string capability_type = 4;
   string code = 5;
   string name = 6;
   string description = 7;
   google.protobuf.Struct requirements = 8;
-  google.protobuf.Struct actions = 9;
+  optional google.protobuf.Struct actions = 9;  // Made optional
   google.protobuf.Struct access_requirements = 10;
   repeated string tags = 11;
-  google.protobuf.Struct gameplay_definition = 12;
+  optional google.protobuf.Struct gameplay_definition = 12;  // Made optional
   Metadata metadata = 13;
 }
 message CreateCapabilityRequest {
   int64 world_id = 1;
-  int64 parent_id = 2;
+  optional int64 parent_id = 2;
   string capability_type = 3;
   string code = 4;
   string name = 5;
   string description = 6;
   google.protobuf.Struct requirements = 7;
-  google.protobuf.Struct actions = 8;
+  optional google.protobuf.Struct actions = 8;
   google.protobuf.Struct access_requirements = 9;
   repeated string tags = 10;
-  google.protobuf.Struct gameplay_definition = 11;
+  optional google.protobuf.Struct gameplay_definition = 11;
 }
 message UpdateCapabilityRequest {
   int64 id = 1;
-  int64 parent_id = 2;
-  string capability_type = 3;
-  string code = 4;
-  string name = 5;
-  string description = 6;
-  google.protobuf.Struct requirements = 7;
-  google.protobuf.Struct actions = 8;
-  google.protobuf.Struct access_requirements = 9;
+  optional int64 parent_id = 2;
+  optional string capability_type = 3;
+  optional string code = 4;
+  optional string name = 5;
+  optional string description = 6;
+  optional google.protobuf.Struct requirements = 7;
+  optional google.protobuf.Struct actions = 8;
+  optional google.protobuf.Struct access_requirements = 9;
   repeated string tags = 10;
-  google.protobuf.Struct gameplay_definition = 11;
+  optional google.protobuf.Struct gameplay_definition = 11;
 }
 message GetCapabilityRequest {
   int64 id = 1;
@@ -392,21 +404,21 @@ message ListEnemiesResponse {
 // ItemCategory
 message ItemCategory {
   int64 id = 1;
-  int64 parent_id = 2;
+  optional int64 parent_id = 2;  // Made optional for proper proto3 semantics
   string name = 3;
   string description = 4;
   Metadata metadata = 5;
 }
 message CreateItemCategoryRequest {
-  int64 parent_id = 1;
+  optional int64 parent_id = 1;
   string name = 2;
   string description = 3;
 }
 message UpdateItemCategoryRequest {
   int64 id = 1;
-  int64 parent_id = 2;
-  string name = 3;
-  string description = 4;
+  optional int64 parent_id = 2;
+  optional string name = 3;
+  optional string description = 4;
 }
 message GetItemCategoryRequest {
   int64 id = 1;
@@ -609,22 +621,22 @@ message ListRacesResponse {
 message WorldNode {
   int64 id = 1;
   int64 world_id = 2;
-  int64 parent_id = 3;
+  optional int64 parent_id = 3;  // Made optional for proper proto3 semantics
   string name = 4;
   string description = 5;
   Metadata metadata = 6;
 }
 message CreateWorldNodeRequest {
   int64 world_id = 1;
-  int64 parent_id = 2;
+  optional int64 parent_id = 2;
   string name = 3;
   string description = 4;
 }
 message UpdateWorldNodeRequest {
   int64 id = 1;
-  int64 parent_id = 2;
-  string name = 3;
-  string description = 4;
+  optional int64 parent_id = 2;
+  optional string name = 3;
+  optional string description = 4;
 }
 message GetWorldNodeRequest {
   int64 id = 1;
@@ -689,7 +701,7 @@ service WorldService {
   rpc CreateWorld(CreateWorldRequest) returns (WorldResponse);
   rpc GetWorld(GetWorldRequest) returns (WorldResponse);
   rpc UpdateWorld(UpdateWorldRequest) returns (WorldResponse);
-  rpc DeleteWorld(DeleteWorldRequest) returns (WorldResponse);
+  rpc DeleteWorld(DeleteWorldRequest) returns (DeleteResponse);
   rpc ListWorlds(ListWorldsRequest) returns (ListWorldsResponse);
 }
 
@@ -697,7 +709,7 @@ service AttributeService {
   rpc CreateAttribute(CreateAttributeRequest) returns (AttributeResponse);
   rpc GetAttribute(GetAttributeRequest) returns (AttributeResponse);
   rpc UpdateAttribute(UpdateAttributeRequest) returns (AttributeResponse);
-  rpc DeleteAttribute(DeleteAttributeRequest) returns (AttributeResponse);
+  rpc DeleteAttribute(DeleteAttributeRequest) returns (DeleteResponse);
   rpc ListAttributes(ListAttributesRequest) returns (ListAttributesResponse);
 }
 
@@ -706,7 +718,7 @@ service CapabilityService {
   rpc CreateCapability(CreateCapabilityRequest) returns (CapabilityResponse);
   rpc GetCapability(GetCapabilityRequest) returns (CapabilityResponse);
   rpc UpdateCapability(UpdateCapabilityRequest) returns (CapabilityResponse);
-  rpc DeleteCapability(DeleteCapabilityRequest) returns (CapabilityResponse);
+  rpc DeleteCapability(DeleteCapabilityRequest) returns (DeleteResponse);
   rpc ListCapabilities(ListCapabilitiesRequest) returns (ListCapabilitiesResponse);
 }
 
@@ -714,13 +726,13 @@ service CharacterClassService {
   rpc CreateCharacterClass(CreateCharacterClassRequest) returns (CharacterClassResponse);
   rpc GetCharacterClass(GetCharacterClassRequest) returns (CharacterClassResponse);
   rpc UpdateCharacterClass(UpdateCharacterClassRequest) returns (CharacterClassResponse);
-  rpc DeleteCharacterClass(DeleteCharacterClassRequest) returns (CharacterClassResponse);
+  rpc DeleteCharacterClass(DeleteCharacterClassRequest) returns (DeleteResponse);
   rpc ListCharacterClasses(ListCharacterClassesRequest) returns (ListCharacterClassesResponse);
 
   rpc CreateCharacterClassFeature(CreateCharacterClassFeatureRequest) returns (CharacterClassFeatureResponse);
   rpc GetCharacterClassFeature(GetCharacterClassFeatureRequest) returns (CharacterClassFeatureResponse);
   rpc UpdateCharacterClassFeature(UpdateCharacterClassFeatureRequest) returns (CharacterClassFeatureResponse);
-  rpc DeleteCharacterClassFeature(DeleteCharacterClassFeatureRequest) returns (CharacterClassFeatureResponse);
+  rpc DeleteCharacterClassFeature(DeleteCharacterClassFeatureRequest) returns (DeleteResponse);
   rpc ListCharacterClassFeatures(ListCharacterClassFeaturesRequest) returns (ListCharacterClassFeaturesResponse);
 }
 
@@ -728,7 +740,7 @@ service CurrencyService {
   rpc CreateCurrency(CreateCurrencyRequest) returns (CurrencyResponse);
   rpc GetCurrency(GetCurrencyRequest) returns (CurrencyResponse);
   rpc UpdateCurrency(UpdateCurrencyRequest) returns (CurrencyResponse);
-  rpc DeleteCurrency(DeleteCurrencyRequest) returns (CurrencyResponse);
+  rpc DeleteCurrency(DeleteCurrencyRequest) returns (DeleteResponse);
   rpc ListCurrencies(ListCurrenciesRequest) returns (ListCurrenciesResponse);
 }
 
@@ -736,7 +748,7 @@ service EnemyService {
   rpc CreateEnemy(CreateEnemyRequest) returns (EnemyResponse);
   rpc GetEnemy(GetEnemyRequest) returns (EnemyResponse);
   rpc UpdateEnemy(UpdateEnemyRequest) returns (EnemyResponse);
-  rpc DeleteEnemy(DeleteEnemyRequest) returns (EnemyResponse);
+  rpc DeleteEnemy(DeleteEnemyRequest) returns (DeleteResponse);
   rpc ListEnemies(ListEnemiesRequest) returns (ListEnemiesResponse);
 }
 
@@ -744,7 +756,7 @@ service ItemCategoryService {
   rpc CreateItemCategory(CreateItemCategoryRequest) returns (ItemCategoryResponse);
   rpc GetItemCategory(GetItemCategoryRequest) returns (ItemCategoryResponse);
   rpc UpdateItemCategory(UpdateItemCategoryRequest) returns (ItemCategoryResponse);
-  rpc DeleteItemCategory(DeleteItemCategoryRequest) returns (ItemCategoryResponse);
+  rpc DeleteItemCategory(DeleteItemCategoryRequest) returns (DeleteResponse);
   rpc ListItemCategories(ListItemCategoriesRequest) returns (ListItemCategoriesResponse);
 }
 
@@ -752,7 +764,7 @@ service ItemService {
   rpc CreateItem(CreateItemRequest) returns (ItemResponse);
   rpc GetItem(GetItemRequest) returns (ItemResponse);
   rpc UpdateItem(UpdateItemRequest) returns (ItemResponse);
-  rpc DeleteItem(DeleteItemRequest) returns (ItemResponse);
+  rpc DeleteItem(DeleteItemRequest) returns (DeleteResponse);
   rpc ListItems(ListItemsRequest) returns (ListItemsResponse);
 }
 
@@ -760,7 +772,7 @@ service NpcTemplateService {
   rpc CreateNpcTemplate(CreateNpcTemplateRequest) returns (NpcTemplateResponse);
   rpc GetNpcTemplate(GetNpcTemplateRequest) returns (NpcTemplateResponse);
   rpc UpdateNpcTemplate(UpdateNpcTemplateRequest) returns (NpcTemplateResponse);
-  rpc DeleteNpcTemplate(DeleteNpcTemplateRequest) returns (NpcTemplateResponse);
+  rpc DeleteNpcTemplate(DeleteNpcTemplateRequest) returns (DeleteResponse);
   rpc ListNpcTemplates(ListNpcTemplatesRequest) returns (ListNpcTemplatesResponse);
 }
 
@@ -768,7 +780,7 @@ service NpcSpawnRuleService {
   rpc CreateNpcSpawnRule(CreateNpcSpawnRuleRequest) returns (NpcSpawnRuleResponse);
   rpc GetNpcSpawnRule(GetNpcSpawnRuleRequest) returns (NpcSpawnRuleResponse);
   rpc UpdateNpcSpawnRule(UpdateNpcSpawnRuleRequest) returns (NpcSpawnRuleResponse);
-  rpc DeleteNpcSpawnRule(DeleteNpcSpawnRuleRequest) returns (NpcSpawnRuleResponse);
+  rpc DeleteNpcSpawnRule(DeleteNpcSpawnRuleRequest) returns (DeleteResponse);
   rpc ListNpcSpawnRules(ListNpcSpawnRulesRequest) returns (ListNpcSpawnRulesResponse);
 }
 
@@ -776,7 +788,7 @@ service RaceService {
   rpc CreateRace(CreateRaceRequest) returns (RaceResponse);
   rpc GetRace(GetRaceRequest) returns (RaceResponse);
   rpc UpdateRace(UpdateRaceRequest) returns (RaceResponse);
-  rpc DeleteRace(DeleteRaceRequest) returns (RaceResponse);
+  rpc DeleteRace(DeleteRaceRequest) returns (DeleteResponse);
   rpc ListRaces(ListRacesRequest) returns (ListRacesResponse);
 }
 
@@ -784,12 +796,126 @@ service WorldNodeService {
   rpc CreateWorldNode(CreateWorldNodeRequest) returns (WorldNodeResponse);
   rpc GetWorldNode(GetWorldNodeRequest) returns (WorldNodeResponse);
   rpc UpdateWorldNode(UpdateWorldNodeRequest) returns (WorldNodeResponse);
-  rpc DeleteWorldNode(DeleteWorldNodeRequest) returns (WorldNodeResponse);
+  rpc DeleteWorldNode(DeleteWorldNodeRequest) returns (DeleteResponse);
   rpc ListWorldNodes(ListWorldNodesRequest) returns (ListWorldNodesResponse);
 
   rpc CreateWorldNodeFeature(CreateWorldNodeFeatureRequest) returns (WorldNodeFeatureResponse);
   rpc GetWorldNodeFeature(GetWorldNodeFeatureRequest) returns (WorldNodeFeatureResponse);
   rpc UpdateWorldNodeFeature(UpdateWorldNodeFeatureRequest) returns (WorldNodeFeatureResponse);
-  rpc DeleteWorldNodeFeature(DeleteWorldNodeFeatureRequest) returns (WorldNodeFeatureResponse);
+  rpc DeleteWorldNodeFeature(DeleteWorldNodeFeatureRequest) returns (DeleteResponse);
   rpc ListWorldNodeFeatures(ListWorldNodeFeaturesRequest) returns (ListWorldNodeFeaturesResponse);
+}
+
+// Filter messages for advanced querying (from game.proto)
+message WorldFilter {
+  optional string code = 1;
+  optional string name = 2;
+}
+
+message AttributeFilter {
+  optional string name = 1;
+}
+
+message CapabilityFilter {
+  optional int64 world_id = 1;
+  optional string capability_type = 2;
+  optional string code = 3;
+  optional string name = 4;
+  optional int64 parent_id = 5;
+  repeated string tags = 6;
+}
+
+message CharacterClassFilter {
+  optional int64 world_id = 1;
+  optional string code = 2;
+  optional string name = 3;
+}
+
+message CharacterClassFeatureFilter {
+  optional int64 class_id = 1;
+  optional int32 level = 2;
+  optional string code = 3;
+}
+
+message CurrencyFilter {
+  optional int64 world_id = 1;
+  optional string code = 2;
+  optional string name = 3;
+  optional bool is_spendable = 4;
+}
+
+message EnemyFilter {
+  optional int64 world_id = 1;
+  optional string code = 2;
+  optional string name = 3;
+  optional string class_name = 4;
+  optional int32 level = 5;
+}
+
+message ItemCategoryFilter {
+  optional int64 parent_id = 1;
+  optional string name = 2;
+}
+
+message ItemFilter {
+  optional int64 world_id = 1;
+  optional int64 category_id = 2;
+  optional string code = 3;
+  optional string name = 4;
+  optional string item_type = 5;
+}
+
+message NpcTemplateFilter {
+  optional string name = 1;
+  optional bool can_spawn_multiple = 2;
+  optional bool can_respawn = 3;
+}
+
+message NpcSpawnRuleFilter {
+  optional int64 npc_template_id = 1;
+  optional int64 world_node_id = 2;
+}
+
+message RaceFilter {
+  optional int64 world_id = 1;
+  optional string code = 2;
+  optional string name = 3;
+}
+
+message WorldNodeFilter {
+  optional int64 world_id = 1;
+  optional int64 parent_id = 2;
+  optional string name = 3;
+}
+
+message WorldNodeFeatureFilter {
+  optional int64 world_node_id = 1;
+  optional string feature_name = 2;
+}
+
+// Bulk operations and administrative service (from game.proto)
+service GameManagementService {
+  // Bulk operations
+  rpc ExportWorld(Id) returns (stream google.protobuf.Struct);
+  rpc ImportWorld(stream google.protobuf.Struct) returns (WorldResponse);
+  
+  // Statistics and overview
+  rpc GetWorldStatistics(Id) returns (google.protobuf.Struct);
+  rpc GetGameSystemHealth(google.protobuf.Empty) returns (google.protobuf.Struct);
+  
+  // Filter-based querying for advanced use cases
+  rpc FilterWorlds(WorldFilter) returns (ListWorldsResponse);
+  rpc FilterAttributes(AttributeFilter) returns (ListAttributesResponse);
+  rpc FilterCapabilities(CapabilityFilter) returns (ListCapabilitiesResponse);
+  rpc FilterCharacterClasses(CharacterClassFilter) returns (ListCharacterClassesResponse);
+  rpc FilterCharacterClassFeatures(CharacterClassFeatureFilter) returns (ListCharacterClassFeaturesResponse);
+  rpc FilterCurrencies(CurrencyFilter) returns (ListCurrenciesResponse);
+  rpc FilterEnemies(EnemyFilter) returns (ListEnemiesResponse);
+  rpc FilterItemCategories(ItemCategoryFilter) returns (ListItemCategoriesResponse);
+  rpc FilterItems(ItemFilter) returns (ListItemsResponse);
+  rpc FilterNpcTemplates(NpcTemplateFilter) returns (ListNpcTemplatesResponse);
+  rpc FilterNpcSpawnRules(NpcSpawnRuleFilter) returns (ListNpcSpawnRulesResponse);
+  rpc FilterRaces(RaceFilter) returns (ListRacesResponse);
+  rpc FilterWorldNodes(WorldNodeFilter) returns (ListWorldNodesResponse);
+  rpc FilterWorldNodeFeatures(WorldNodeFeatureFilter) returns (ListWorldNodeFeaturesResponse);
 }

@@ -87,5 +87,5 @@ CREATE TABLE currencies (...);
 ## Dependencies
 
 - Requires database connection from `internal/database/db.go`
-- Uses protobuf definitions from `game_v1.proto`
+- Uses protobuf definitions from `protos/game/v1/item_service.proto`
 - Follows patterns from existing WorldService implementation

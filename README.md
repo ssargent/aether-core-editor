@@ -19,9 +19,11 @@ A web-based editor for a text-based game engine with gRPC protobuf services to m
 ├── gen/                 # Generated protobuf code
 │   ├── game/v1/         # Protobuf message types
 │   └── gamev1connect/   # Connect RPC service interfaces
-├── game_v1.proto        # Protobuf service definitions
+├── protos/              # Protobuf service definitions
+│   └── game/v1/         # Individual service proto files
 ├── mud-schema-v2.sql    # PostgreSQL database schema
 ├── docker-compose.yml   # Development database
+├── buf.gen.yaml         # Buf protobuf generation config
 └── Makefile            # Build and development commands
 ```
 
