@@ -6,11 +6,11 @@ managed:
       value: github.com/ssargent/aether-core-editor/gen
 plugins:
   - remote: buf.build/protocolbuffers/go
-    out: gen
+    out: server/gen
     opt:
       - paths=source_relative
       - Mprotos/game/v1/common.proto=github.com/ssargent/aether-core-editor/gen/game/v1
   - remote: buf.build/connectrpc/go
-    out: gen
+    out: server/gen
     opt:
       - paths=source_relative

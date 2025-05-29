@@ -1,0 +1,144 @@
+syntax = "proto3";
+
+package aethercore.v1;
+
+option go_package = "github.com/ssargent/aether-core-editor/gen/aethercore/v1;aethercorev1";
+
+import "aethercore/v1/common.proto";
+import "google/protobuf/struct.proto";
+
+// CharacterClass
+message CharacterClass {
+  int64 id = 1;
+  int64 world_id = 2;
+  string code = 3;
+  string name = 4;
+  string description = 5;
+  int32 hit_points = 6;
+  string stamina_expression = 7;
+  string skillpoint_expression = 8;
+  google.protobuf.Struct proficiencies = 9;
+  Metadata metadata = 10;
+}
+
+message CreateCharacterClassRequest {
+  int64 world_id = 1;
+  string code = 2;
+  string name = 3;
+  string description = 4;
+  int32 hit_points = 5;
+  string stamina_expression = 6;
+  string skillpoint_expression = 7;
+  google.protobuf.Struct proficiencies = 8;
+}
+
+message UpdateCharacterClassRequest {
+  int64 id = 1;
+  string code = 2;
+  string name = 3;
+  string description = 4;
+  int32 hit_points = 5;
+  string stamina_expression = 6;
+  string skillpoint_expression = 7;
+  google.protobuf.Struct proficiencies = 8;
+}
+
+message GetCharacterClassRequest {
+  int64 id = 1;
+}
+
+message DeleteCharacterClassRequest {
+  int64 id = 1;
+}
+
+message ListCharacterClassesRequest {
+  int64 world_id = 1;
+  string code = 2;
+  string name = 3;
+}
+
+message CharacterClassResponse {
+  CharacterClass character_class = 1;
+}
+
+message ListCharacterClassesResponse {
+  repeated CharacterClass character_classes = 1;
+  PaginationResponse pagination = 2;
+}
+
+// CharacterClassFeature
+message CharacterClassFeature {
+  int64 id = 1;
+  int64 class_id = 2;
+  int32 level = 3;
+  string code = 4;
+  string name = 5;
+  string description = 6;
+  Metadata metadata = 7;
+}
+
+message CreateCharacterClassFeatureRequest {
+  int64 class_id = 1;
+  int32 level = 2;
+  string code = 3;
+  string name = 4;
+  string description = 5;
+}
+
+message UpdateCharacterClassFeatureRequest {
+  int64 id = 1;
+  int32 level = 2;
+  string code = 3;
+  string name = 4;
+  string description = 5;
+}
+
+message GetCharacterClassFeatureRequest {
+  int64 id = 1;
+}
+
+message DeleteCharacterClassFeatureRequest {
+  int64 id = 1;
+}
+
+message ListCharacterClassFeaturesRequest {
+  int64 class_id = 1;
+  int32 level = 2;
+  string code = 3;
+}
+
+message CharacterClassFeatureResponse {
+  CharacterClassFeature character_class_feature = 1;
+}
+
+message ListCharacterClassFeaturesResponse {
+  repeated CharacterClassFeature character_class_features = 1;
+  PaginationResponse pagination = 2;
+}
+
+// Character class filters for advanced querying
+message CharacterClassFilter {
+  optional int64 world_id = 1;
+  optional string code = 2;
+  optional string name = 3;
+}
+
+message CharacterClassFeatureFilter {
+  optional int64 class_id = 1;
+  optional int32 level = 2;
+  optional string code = 3;
+}
+
+service CharacterClassService {
+  rpc CreateCharacterClass(CreateCharacterClassRequest) returns (CharacterClassResponse);
+  rpc GetCharacterClass(GetCharacterClassRequest) returns (CharacterClassResponse);
+  rpc UpdateCharacterClass(UpdateCharacterClassRequest) returns (CharacterClassResponse);
+  rpc DeleteCharacterClass(DeleteCharacterClassRequest) returns (DeleteResponse);
+  rpc ListCharacterClasses(ListCharacterClassesRequest) returns (ListCharacterClassesResponse);
+
+  rpc CreateCharacterClassFeature(CreateCharacterClassFeatureRequest) returns (CharacterClassFeatureResponse);
+  rpc GetCharacterClassFeature(GetCharacterClassFeatureRequest) returns (CharacterClassFeatureResponse);
+  rpc UpdateCharacterClassFeature(UpdateCharacterClassFeatureRequest) returns (CharacterClassFeatureResponse);
+  rpc DeleteCharacterClassFeature(DeleteCharacterClassFeatureRequest) returns (DeleteResponse);
+  rpc ListCharacterClassFeatures(ListCharacterClassFeaturesRequest) returns (ListCharacterClassFeaturesResponse);
+}

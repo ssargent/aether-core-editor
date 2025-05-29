@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package aethercore.v1;
+
+option go_package = "github.com/ssargent/aether-core-editor/gen/aethercore/v1;aethercorev1";
+
+import "google/protobuf/timestamp.proto";
+
+// Common metadata for all entities
+message Metadata {
+  google.protobuf.Timestamp created_at = 1;
+  google.protobuf.Timestamp updated_at = 2;
+}
+
+// Basic identifier message for cleaner service signatures
+message Id {
+  int64 id = 1;
+}
+
+message PaginationRequest {
+  int32 page = 1;
+  int32 page_size = 2;
+}
+
+message PaginationResponse {
+  int32 total_count = 1;
+  int32 page_count = 2;
+  int32 current_page = 3;
+  int32 page_size = 4;
+}
+
+// Standard delete response for consistency
+message DeleteResponse {
+  bool success = 1;
+  string message = 2;
+}

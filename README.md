@@ -12,15 +12,18 @@ A web-based editor for a text-based game engine with gRPC protobuf services to m
 ## Project Structure
 
 ```
-├── cmd/server/          # Main server application
-├── internal/
-│   ├── database/        # Database connection and utilities
-│   └── services/        # Business logic and RPC service implementations
+├── protos/              # Protobuf service definitions
+│   └── game/v1/         # Individual service proto files
+├── server/              # Go backend server
+│   ├── cmd/server/      # Main server application
+│   ├── internal/
+│   │   ├── database/    # Database connection and utilities
+│   │   └── services/    # Business logic and RPC service implementations
+│   └── go.mod           # Server dependencies
 ├── gen/                 # Generated protobuf code
 │   ├── game/v1/         # Protobuf message types
 │   └── gamev1connect/   # Connect RPC service interfaces
-├── protos/              # Protobuf service definitions
-│   └── game/v1/         # Individual service proto files
+├── scripts/             # Utility scripts
 ├── mud-schema-v2.sql    # PostgreSQL database schema
 ├── docker-compose.yml   # Development database
 ├── buf.gen.yaml         # Buf protobuf generation config
@@ -39,8 +42,11 @@ A web-based editor for a text-based game engine with gRPC protobuf services to m
 
 1. **Clone and setup dependencies:**
    ```bash
-   go mod download
-   make tools  # Install protobuf generation tools
+   # Install protobuf generation tools at root level
+   make tools
+   
+   # Setup server dependencies
+   cd server && go mod download
    ```
 
 2. **Start the development database:**
@@ -55,13 +61,18 @@ A web-based editor for a text-based game engine with gRPC protobuf services to m
 
 4. **Build and run the server:**
    ```bash
-   make build
-   make run
+   cd server
+   go build -o ../bin/server ./cmd/server
+   go run ./cmd/server
    ```
 
-   Or directly:
+   Or from the root directory:
    ```bash
-   go run ./cmd/server
+   # Build server binary to bin/server
+   cd server && go build -o ../bin/server ./cmd/server
+   
+   # Run the server
+   cd server && go run ./cmd/server
    ```
 
 ## Configuration
@@ -111,16 +122,22 @@ The server implements the following gRPC/Connect services:
 
 ## Development
 
-### Available Make Commands
+### Available Commands
 
+**Root level (protobuf generation):**
 ```bash
 make generate    # Generate protobuf code
-make build      # Build the server
-make run        # Run the server
-make test       # Run tests
-make clean      # Clean generated files
-make deps       # Download dependencies
-make tools      # Install protobuf tools
+make tools       # Install protobuf tools
+make clean       # Clean generated files
+```
+
+**Server level (from /server directory):**
+```bash
+cd server
+go build -o ../bin/server ./cmd/server  # Build the server
+go run ./cmd/server                     # Run the server
+go test ./...                           # Run tests
+go mod download                         # Download dependencies
 ```
 
 ### Database Schema

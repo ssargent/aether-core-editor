@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+package aethercore.v1;
+
+option go_package = "github.com/ssargent/aether-core-editor/gen/aethercore/v1;aethercorev1";
+
+import "aethercore/v1/common.proto";
+
+// Race
+message Race {
+  int64 id = 1;
+  int64 world_id = 2;
+  string code = 3;
+  string name = 4;
+  string description = 5;
+  Metadata metadata = 6;
+}
+
+message CreateRaceRequest {
+  int64 world_id = 1;
+  string code = 2;
+  string name = 3;
+  string description = 4;
+}
+
+message UpdateRaceRequest {
+  int64 id = 1;
+  string code = 2;
+  string name = 3;
+  string description = 4;
+}
+
+message GetRaceRequest {
+  int64 id = 1;
+}
+
+message DeleteRaceRequest {
+  int64 id = 1;
+}
+
+message ListRacesRequest {
+  int64 world_id = 1;
+  string code = 2;
+  string name = 3;
+}
+
+message RaceResponse {
+  Race race = 1;
+}
+
+message ListRacesResponse {
+  repeated Race races = 1;
+  PaginationResponse pagination = 2;
+}
+
+// Race filter for advanced querying
+message RaceFilter {
+  optional int64 world_id = 1;
+  optional string code = 2;
+  optional string name = 3;
+}
+
+service RaceService {
+  rpc CreateRace(CreateRaceRequest) returns (RaceResponse);
+  rpc GetRace(GetRaceRequest) returns (RaceResponse);
+  rpc UpdateRace(UpdateRaceRequest) returns (RaceResponse);
+  rpc DeleteRace(DeleteRaceRequest) returns (DeleteResponse);
+  rpc ListRaces(ListRacesRequest) returns (ListRacesResponse);
+}

@@ -1,0 +1,127 @@
+syntax = "proto3";
+
+package aethercore.v1;
+
+option go_package = "github.com/ssargent/aether-core-editor/gen/aethercore/v1;aethercorev1";
+
+import "aethercore/v1/common.proto";
+import "google/protobuf/struct.proto";
+
+// WorldNode
+message WorldNode {
+  int64 id = 1;
+  int64 world_id = 2;
+  optional int64 parent_id = 3;
+  string name = 4;
+  string description = 5;
+  Metadata metadata = 6;
+}
+
+message CreateWorldNodeRequest {
+  int64 world_id = 1;
+  optional int64 parent_id = 2;
+  string name = 3;
+  string description = 4;
+}
+
+message UpdateWorldNodeRequest {
+  int64 id = 1;
+  optional int64 parent_id = 2;
+  optional string name = 3;
+  optional string description = 4;
+}
+
+message GetWorldNodeRequest {
+  int64 id = 1;
+}
+
+message DeleteWorldNodeRequest {
+  int64 id = 1;
+}
+
+message ListWorldNodesRequest {
+  int64 world_id = 1;
+  int64 parent_id = 2;
+  string name = 3;
+}
+
+message WorldNodeResponse {
+  WorldNode world_node = 1;
+}
+
+message ListWorldNodesResponse {
+  repeated WorldNode world_nodes = 1;
+  PaginationResponse pagination = 2;
+}
+
+// WorldNodeFeature
+message WorldNodeFeature {
+  int64 id = 1;
+  int64 world_node_id = 2;
+  string feature_name = 3;
+  string feature_value = 4;
+  google.protobuf.Struct feature_properties = 5;
+  Metadata metadata = 6;
+}
+
+message CreateWorldNodeFeatureRequest {
+  int64 world_node_id = 1;
+  string feature_name = 2;
+  string feature_value = 3;
+  google.protobuf.Struct feature_properties = 4;
+}
+
+message UpdateWorldNodeFeatureRequest {
+  int64 id = 1;
+  string feature_name = 2;
+  string feature_value = 3;
+  google.protobuf.Struct feature_properties = 4;
+}
+
+message GetWorldNodeFeatureRequest {
+  int64 id = 1;
+}
+
+message DeleteWorldNodeFeatureRequest {
+  int64 id = 1;
+}
+
+message ListWorldNodeFeaturesRequest {
+  int64 world_node_id = 1;
+  string feature_name = 2;
+}
+
+message WorldNodeFeatureResponse {
+  WorldNodeFeature world_node_feature = 1;
+}
+
+message ListWorldNodeFeaturesResponse {
+  repeated WorldNodeFeature world_node_features = 1;
+  PaginationResponse pagination = 2;
+}
+
+// WorldNode filters for advanced querying
+message WorldNodeFilter {
+  optional int64 world_id = 1;
+  optional int64 parent_id = 2;
+  optional string name = 3;
+}
+
+message WorldNodeFeatureFilter {
+  optional int64 world_node_id = 1;
+  optional string feature_name = 2;
+}
+
+service WorldNodeService {
+  rpc CreateWorldNode(CreateWorldNodeRequest) returns (WorldNodeResponse);
+  rpc GetWorldNode(GetWorldNodeRequest) returns (WorldNodeResponse);
+  rpc UpdateWorldNode(UpdateWorldNodeRequest) returns (WorldNodeResponse);
+  rpc DeleteWorldNode(DeleteWorldNodeRequest) returns (DeleteResponse);
+  rpc ListWorldNodes(ListWorldNodesRequest) returns (ListWorldNodesResponse);
+
+  rpc CreateWorldNodeFeature(CreateWorldNodeFeatureRequest) returns (WorldNodeFeatureResponse);
+  rpc GetWorldNodeFeature(GetWorldNodeFeatureRequest) returns (WorldNodeFeatureResponse);
+  rpc UpdateWorldNodeFeature(UpdateWorldNodeFeatureRequest) returns (WorldNodeFeatureResponse);
+  rpc DeleteWorldNodeFeature(DeleteWorldNodeFeatureRequest) returns (DeleteResponse);
+  rpc ListWorldNodeFeatures(ListWorldNodeFeaturesRequest) returns (ListWorldNodeFeaturesResponse);
+}

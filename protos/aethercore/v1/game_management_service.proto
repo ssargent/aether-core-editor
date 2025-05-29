@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package aethercore.v1;
+
+option go_package = "github.com/ssargent/aether-core-editor/gen/aethercore/v1;aethercorev1";
+
+import "aethercore/v1/common.proto";
+import "aethercore/v1/world_service.proto";
+import "aethercore/v1/attribute_service.proto";
+import "aethercore/v1/capability_service.proto";
+import "aethercore/v1/character_class_service.proto";
+import "aethercore/v1/currency_service.proto";
+import "aethercore/v1/enemy_service.proto";
+import "aethercore/v1/item_service.proto";
+import "aethercore/v1/npc_service.proto";
+import "aethercore/v1/race_service.proto";
+import "aethercore/v1/world_node_service.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/empty.proto";
+
+// Bulk operations and administrative service
+service GameManagementService {
+  // Bulk operations
+  rpc ExportWorld(Id) returns (stream google.protobuf.Struct);
+  rpc ImportWorld(stream google.protobuf.Struct) returns (WorldResponse);
+  
+  // Statistics and overview
+  rpc GetWorldStatistics(Id) returns (google.protobuf.Struct);
+  rpc GetGameSystemHealth(google.protobuf.Empty) returns (google.protobuf.Struct);
+  
+  // Filter-based querying for advanced use cases
+  rpc FilterWorlds(WorldFilter) returns (ListWorldsResponse);
+  rpc FilterAttributes(AttributeFilter) returns (ListAttributesResponse);
+  rpc FilterCapabilities(CapabilityFilter) returns (ListCapabilitiesResponse);
+  rpc FilterCharacterClasses(CharacterClassFilter) returns (ListCharacterClassesResponse);
+  rpc FilterCharacterClassFeatures(CharacterClassFeatureFilter) returns (ListCharacterClassFeaturesResponse);
+  rpc FilterCurrencies(CurrencyFilter) returns (ListCurrenciesResponse);
+  rpc FilterEnemies(EnemyFilter) returns (ListEnemiesResponse);
+  rpc FilterItemCategories(ItemCategoryFilter) returns (ListItemCategoriesResponse);
+  rpc FilterItems(ItemFilter) returns (ListItemsResponse);
+  rpc FilterNpcTemplates(NpcTemplateFilter) returns (ListNpcTemplatesResponse);
+  rpc FilterNpcSpawnRules(NpcSpawnRuleFilter) returns (ListNpcSpawnRulesResponse);
+  rpc FilterRaces(RaceFilter) returns (ListRacesResponse);
+  rpc FilterWorldNodes(WorldNodeFilter) returns (ListWorldNodesResponse);
+  rpc FilterWorldNodeFeatures(WorldNodeFeatureFilter) returns (ListWorldNodeFeaturesResponse);
+}
