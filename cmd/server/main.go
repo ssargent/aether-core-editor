@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"connectrpc.com/grpcreflect"
-	"github.com/ssargent/aether-core-editor/gen/gamev1connect"
+	"github.com/ssargent/aether-core-editor/gen/game/v1/gamev1connect"
 	"github.com/ssargent/aether-core-editor/internal/database"
 	"github.com/ssargent/aether-core-editor/internal/services"
 	"golang.org/x/net/http2"

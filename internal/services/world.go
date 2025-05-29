@@ -154,7 +154,7 @@ func (s *WorldService) UpdateWorld(
 func (s *WorldService) DeleteWorld(
 	ctx context.Context,
 	req *connect.Request[gamev1.DeleteWorldRequest],
-) (*connect.Response[gamev1.WorldResponse], error) {
+) (*connect.Response[gamev1.DeleteResponse], error) {
 	// First get the world to return it
 	getQuery := `
 		SELECT id, code, name, description, created_at, updated_at 
@@ -192,8 +192,9 @@ func (s *WorldService) DeleteWorld(
 		UpdatedAt: timestamppb.New(updatedAt),
 	}
 
-	return connect.NewResponse(&gamev1.WorldResponse{
-		World: &world,
+	return connect.NewResponse(&gamev1.DeleteResponse{
+		Success: true,
+		Message: fmt.Sprintf("World '%s' deleted successfully", world.Name),
 	}), nil
 }
 

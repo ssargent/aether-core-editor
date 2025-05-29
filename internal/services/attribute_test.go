@@ -47,7 +47,7 @@ func TestAttributeService_GetAttribute(t *testing.T) {
 
 	// Test with nil service should panic, so we test the panic occurs
 	service := &AttributeService{}
-	
+
 	defer func() {
 		if r := recover(); r == nil {
 			t.Error("Expected panic with nil database connection")
@@ -77,7 +77,7 @@ func TestAttributeService_UpdateAttribute(t *testing.T) {
 
 	// Test with nil service should panic, so we test the panic occurs
 	service := &AttributeService{}
-	
+
 	defer func() {
 		if r := recover(); r == nil {
 			t.Error("Expected panic with nil database connection")
@@ -102,7 +102,7 @@ func TestAttributeService_DeleteAttribute(t *testing.T) {
 
 	// Test with nil service should panic, so we test the panic occurs
 	service := &AttributeService{}
-	
+
 	defer func() {
 		if r := recover(); r == nil {
 			t.Error("Expected panic with nil database connection")
@@ -127,7 +127,7 @@ func TestAttributeService_ListAttributes(t *testing.T) {
 
 	// Test with nil service should panic, so we test the panic occurs
 	service := &AttributeService{}
-	
+
 	defer func() {
 		if r := recover(); r == nil {
 			t.Error("Expected panic with nil database connection")
@@ -150,7 +150,7 @@ func TestAttributeService_ListAttributesEmpty(t *testing.T) {
 
 	// Test with nil service should panic, so we test the panic occurs
 	service := &AttributeService{}
-	
+
 	defer func() {
 		if r := recover(); r == nil {
 			t.Error("Expected panic with nil database connection")

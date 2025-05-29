@@ -149,7 +149,7 @@ func (s *AttributeService) UpdateAttribute(
 func (s *AttributeService) DeleteAttribute(
 	ctx context.Context,
 	req *connect.Request[gamev1.DeleteAttributeRequest],
-) (*connect.Response[gamev1.AttributeResponse], error) {
+) (*connect.Response[gamev1.DeleteResponse], error) {
 	// First get the attribute to return it
 	query := `
 		SELECT id, name, description, created_at, updated_at 
@@ -186,8 +186,9 @@ func (s *AttributeService) DeleteAttribute(
 		UpdatedAt: timestamppb.New(updatedAt),
 	}
 
-	return connect.NewResponse(&gamev1.AttributeResponse{
-		Attribute: &attribute,
+	return connect.NewResponse(&gamev1.DeleteResponse{
+		Success: true,
+		Message: fmt.Sprintf("Attribute '%s' deleted successfully", attribute.Name),
 	}), nil
 }
 
@@ -200,7 +201,7 @@ func (s *AttributeService) ListAttributes(
 	query := `
 		SELECT id, name, description, created_at, updated_at 
 		FROM game.attributes`
-	
+
 	args := []interface{}{}
 	conditions := []string{}
 

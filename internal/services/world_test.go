@@ -27,7 +27,7 @@ func TestWorldService_CreateWorld(t *testing.T) {
 
 	// Test with nil service should panic, so we test the panic occurs
 	service := &WorldService{}
-	
+
 	defer func() {
 		if r := recover(); r == nil {
 			t.Error("Expected panic with nil database connection")
