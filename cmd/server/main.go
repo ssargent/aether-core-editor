@@ -23,6 +23,7 @@ func main() {
 
 	// Create services
 	worldService := services.NewWorldService(db)
+	attributeService := services.NewAttributeService(db)
 
 	// Create HTTP multiplexer
 	mux := http.NewServeMux()
@@ -31,9 +32,13 @@ func main() {
 	path, handler := gamev1connect.NewWorldServiceHandler(worldService)
 	mux.Handle(path, handler)
 
+	attributePath, attributeHandler := gamev1connect.NewAttributeServiceHandler(attributeService)
+	mux.Handle(attributePath, attributeHandler)
+
 	// Add gRPC reflection for development
 	reflector := grpcreflect.NewStaticReflector(
 		"game.v1.WorldService",
+		"game.v1.AttributeService",
 		// Add other services here as they're implemented
 	)
 	mux.Handle(grpcreflect.NewHandlerV1(reflector))
@@ -51,7 +56,7 @@ func main() {
 	// Start server with HTTP/2 support
 	log.Printf("Starting server on port %s", port)
 	log.Printf("gRPC-Web and Connect clients can access services at http://localhost:%s", port)
-	
+
 	err = http.ListenAndServe(
 		":"+port,
 		// Use h2c for HTTP/2 without TLS (development only)
@@ -69,12 +74,12 @@ func addCORS(handler http.Handler) http.Handler {
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Connect-Protocol-Version, Connect-Timeout-Ms")
 		w.Header().Set("Access-Control-Expose-Headers", "Connect-Protocol-Version, Connect-Timeout-Ms")
-		
+
 		if r.Method == "OPTIONS" {
 			w.WriteHeader(http.StatusOK)
 			return
 		}
-		
+
 		handler.ServeHTTP(w, r)
 	})
 }

@@ -28,23 +28,23 @@ func (s *WorldService) CreateWorld(
 	req *connect.Request[gamev1.CreateWorldRequest],
 ) (*connect.Response[gamev1.WorldResponse], error) {
 	now := time.Now()
-	
+
 	query := `
 		INSERT INTO worlds (code, name, description, created_at, updated_at) 
 		VALUES ($1, $2, $3, $4, $5) 
 		RETURNING id, created_at, updated_at`
-	
+
 	var id int64
 	var createdAt, updatedAt time.Time
-	
-	err := s.db.QueryRowContext(ctx, query, 
-		req.Msg.Code, 
-		req.Msg.Name, 
-		req.Msg.Description, 
-		now, 
+
+	err := s.db.QueryRowContext(ctx, query,
+		req.Msg.Code,
+		req.Msg.Name,
+		req.Msg.Description,
+		now,
 		now,
 	).Scan(&id, &createdAt, &updatedAt)
-	
+
 	if err != nil {
 		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to create world: %w", err))
 	}
@@ -74,10 +74,10 @@ func (s *WorldService) GetWorld(
 		SELECT id, code, name, description, created_at, updated_at 
 		FROM worlds 
 		WHERE id = $1`
-	
+
 	var world gamev1.World
 	var createdAt, updatedAt time.Time
-	
+
 	err := s.db.QueryRowContext(ctx, query, req.Msg.Id).Scan(
 		&world.Id,
 		&world.Code,
@@ -86,7 +86,7 @@ func (s *WorldService) GetWorld(
 		&createdAt,
 		&updatedAt,
 	)
-	
+
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("world not found"))
@@ -110,23 +110,23 @@ func (s *WorldService) UpdateWorld(
 	req *connect.Request[gamev1.UpdateWorldRequest],
 ) (*connect.Response[gamev1.WorldResponse], error) {
 	now := time.Now()
-	
+
 	query := `
 		UPDATE worlds 
 		SET code = $2, name = $3, description = $4, updated_at = $5 
 		WHERE id = $1 
 		RETURNING created_at, updated_at`
-	
+
 	var createdAt, updatedAt time.Time
-	
-	err := s.db.QueryRowContext(ctx, query, 
+
+	err := s.db.QueryRowContext(ctx, query,
 		req.Msg.Id,
 		req.Msg.Code,
 		req.Msg.Name,
 		req.Msg.Description,
 		now,
 	).Scan(&createdAt, &updatedAt)
-	
+
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("world not found"))
@@ -160,10 +160,10 @@ func (s *WorldService) DeleteWorld(
 		SELECT id, code, name, description, created_at, updated_at 
 		FROM worlds 
 		WHERE id = $1`
-	
+
 	var world gamev1.World
 	var createdAt, updatedAt time.Time
-	
+
 	err := s.db.QueryRowContext(ctx, getQuery, req.Msg.Id).Scan(
 		&world.Id,
 		&world.Code,
@@ -172,7 +172,7 @@ func (s *WorldService) DeleteWorld(
 		&createdAt,
 		&updatedAt,
 	)
-	
+
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("world not found"))
@@ -204,7 +204,7 @@ func (s *WorldService) ListWorlds(
 ) (*connect.Response[gamev1.ListWorldsResponse], error) {
 	page := int32(1)
 	pageSize := int32(50)
-	
+
 	if req.Msg.Pagination != nil {
 		if req.Msg.Pagination.Page > 0 {
 			page = req.Msg.Pagination.Page
@@ -213,7 +213,7 @@ func (s *WorldService) ListWorlds(
 			pageSize = req.Msg.Pagination.PageSize
 		}
 	}
-	
+
 	if pageSize > 100 {
 		pageSize = 100
 	}
@@ -255,9 +255,9 @@ func (s *WorldService) ListWorlds(
 		FROM worlds %s
 		ORDER BY created_at DESC 
 		LIMIT $%d OFFSET $%d`, whereClause, argIndex, argIndex+1)
-	
+
 	args = append(args, pageSize, offset)
-	
+
 	rows, err := s.db.QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to list worlds: %w", err))
@@ -268,7 +268,7 @@ func (s *WorldService) ListWorlds(
 	for rows.Next() {
 		var world gamev1.World
 		var createdAt, updatedAt time.Time
-		
+
 		err := rows.Scan(
 			&world.Id,
 			&world.Code,

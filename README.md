@@ -90,8 +90,14 @@ The server implements the following gRPC/Connect services:
 - `DeleteWorld` - Delete a world
 - `ListWorlds` - List worlds with pagination and filtering
 
+### AttributeService
+- `CreateAttribute` - Create a new character attribute
+- `GetAttribute` - Retrieve an attribute by ID
+- `UpdateAttribute` - Update attribute details
+- `DeleteAttribute` - Delete an attribute
+- `ListAttributes` - List attributes with pagination and filtering
+
 ### Planned Services
-- AttributeService
 - CapabilityService
 - CharacterClassService
 - CurrencyService
