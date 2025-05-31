@@ -2,6 +2,8 @@
 
 A modern web-based editor for creating immersive text-based gaming worlds. The Aether Core Editor provides a beautiful, intuitive interface for managing game world data through powerful gRPC protobuf services.
 
+> **This is real software** However it is also a testbed for working with agent mode LLMs for software development.  Its not going to be useful for quite some time and may never follow a normal software life cycle.  
+
 ## Architecture
 
 - **Backend**: Go with Connect-RPC framework
